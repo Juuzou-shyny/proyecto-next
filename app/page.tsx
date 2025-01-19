@@ -31,9 +31,9 @@ export default function Home() {
 
   return (
     <main className="flex flex-col items-center">
-      <div className="w-full bg-green-200 p-10 text-center">
-        <h1 className="text-4xl font-bold text-green-800">Bienvenido a la Tienda de Plantas</h1>
-        <p className="text-lg text-green-700 mt-4">
+      <div className="w-full bg-green-950 p-10 text-center">
+        <h1 className="text-4xl font-bold text-green-200">Bienvenido a la Tienda de Plantas</h1>
+        <p className="text-lg text-amber-50 mt-4">
           Descubre las mejores plantas para decorar tu hogar.
         </p>
       </div>
@@ -49,7 +49,7 @@ export default function Home() {
       </div>
       <a
         href="/shop"
-        className="mt-6 bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600"
+        className="mt-6 bg-amber-800 text-white px-6 py-2 rounded hover:bg-green-600"
       >
         Ver toda la tienda
       </a>
