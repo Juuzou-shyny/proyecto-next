@@ -1,7 +1,7 @@
 import Pagination from '@/app/ui/plants/pagination';
 import Search from '@/app/ui/search';
 import Table from '@/app/ui/cart/table'; // Cambia esto a tu tabla específica para plantas
-import { AddPlant } from '@/app/ui/plants/buttons'; // Botón para agregar plantas
+import { AddPlant } from '@/app/ui/cart/buttons'; // Botón para agregar plantas
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { PlantsTableSkeleton } from '@/app/ui/skeletons'; // Skeleton específico para plantas
