@@ -38,11 +38,6 @@ export default async function CardWrapper() {
       <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
       <Card title="Total Customers" value={numberOfCustomers} type="customers" />
       {/* Nueva Tarjeta del Carrito */}
-      <Card
-        title="Carrito de Plantas"
-        value={`${cartData.totalPlants} plantas ($${cartData.totalAmount.toFixed(2)})`}
-        type="cart"
-      />
     </>
   );
 }

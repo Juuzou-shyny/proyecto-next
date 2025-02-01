@@ -1,57 +1,32 @@
-import CardWrapper from '@/app/ui/dashboard/cards';
+import ClientCardWrapper from '@/app/ui/dashboard/client-cards'; // Importamos el nuevo componente
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
-import PlantsTable from '@/app/ui/cart/table'; // Tabla del carrito
-import { PlantsTableSkeleton } from '@/app/ui/skeletons';
-
-import {
-  fetchRevenue,
-  fetchLatestInvoices,
-  fetchCardData,
-} from '@/app/lib/data';
-import { Suspense } from 'react';
 import { 
   LatestInvoicesSkeleton, 
   RevenueChartSkeleton,
-  CardsSkeleton,
 } from '@/app/ui/skeletons';
+import { Suspense } from 'react';
 
 export default async function Page() {
-  // Datos simulados para el carrito
-  const plantsInCart = [
-    { id: 1, name: 'Cactus', image_url: '/images/cactus.jpg', price: 5, quantity: 2 },
-    { id: 2, name: 'Rosa', image_url: '/images/rosa.jpg', price: 10, quantity: 1 },
+  // Datos simulados para las plantas destacadas
+  const featuredPlants = [
+    { id: 1, name: 'Cactus', image_url: '/images/cactus.jpg', price: 5 },
+    { id: 2, name: 'Rosa', image_url: '/images/rosa.jpg', price: 10 },
+    { id: 3, name: 'Orquídea', image_url: '/images/orquidea.jpg', price: 15 },
+    { id: 4, name: 'Helecho', image_url: '/images/helecho.jpg', price: 7 },
   ];
 
   return (
     <main>
       {/* Título del Dashboard */}
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Dashboard
+        Bienvenido a tu espacio de plantas
       </h1>
 
-      {/* Enlaces a las Plantas y al Carrito */}
-      <div className="mb-6 flex gap-4">
-        <a
-          href="/dashboard/plants"
-          className="rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition"
-        >
-          🌱 Ver Plantas Disponibles
-        </a>
-        <a
-          href="/dashboard/cart"
-          className="rounded bg-green-500 px-4 py-2 text-white hover:bg-green-600 transition"
-        >
-          🛒 Ir al Carrito
-        </a>
-      </div>
-
-      {/* Tarjetas de Resumen */}
+      {/* Tarjetas del Cliente */}
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-        <Suspense fallback={<CardsSkeleton />}>
-          <CardWrapper />
-        </Suspense>
+        <ClientCardWrapper />
       </div>
 
       {/* Gráficos y Facturas */}
@@ -64,12 +39,30 @@ export default async function Page() {
         </Suspense>
       </div>
 
-      {/* Resumen del Carrito (Tabla Simplificada) */}
+      {/* Plantas Destacadas en formato Grid */}
       <div className="mt-6">
-        <h2 className="text-lg font-bold mb-4">Resumen del Carrito</h2>
-        <Suspense fallback={<PlantsTableSkeleton />}>
-          <PlantsTable plants={plantsInCart} />
-        </Suspense>
+        <h2 className="text-lg font-bold mb-4">
+          Nuestras best plantas, las más queridas por nuestros clientes
+        </h2>
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {featuredPlants.map((plant) => (
+            <div
+              key={plant.id}
+              className="flex flex-col items-center rounded-lg bg-gray-50 p-4 shadow"
+            >
+              <div
+                className="h-32 w-32 rounded-lg bg-gray-200"
+                style={{
+                  backgroundImage: `url(${plant.image_url})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center',
+                }}
+              ></div>
+              <div className="mt-4 text-lg font-semibold">{plant.name}</div>
+              <div className="mt-2 text-gray-600">${plant.price}</div>
+            </div>
+          ))}
+        </div>
       </div>
     </main>
   );

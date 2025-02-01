@@ -247,3 +247,46 @@ export function PlantsTableSkeleton() {
   );
 }
 
+export function PlantsestSkeleton() {
+  return (
+    <div className="mt-6 flow-root">
+      <div className="rounded-lg bg-gray-50 p-4">
+        {/* Título opcional */}
+        <h2 className="text-lg font-medium text-gray-700">Plantas Destacadas</h2>
+        
+        {/* Reemplazar tabla por el grid */}
+        <PlantsGridSkeleton />
+      </div>
+    </div>
+  );
+}
+
+
+// Componente individual para cada tarjeta de planta
+function PlantCardSkeleton() {
+  return (
+    <div className="flex flex-col items-center rounded-lg bg-gray-50 p-4 shadow">
+      {/* Imagen de la planta */}
+      <div className="h-32 w-32 rounded-lg bg-gray-200"></div>
+      {/* Nombre de la planta */}
+      <div className="mt-4 h-6 w-24 rounded bg-gray-200"></div>
+      {/* Precio */}
+      <div className="mt-2 h-6 w-16 rounded bg-gray-200"></div>
+    </div>
+  );
+}
+
+
+
+export function PlantsGridSkeleton() {
+  return (
+    <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+      {/* Aquí se renderizan 4 o 5 elementos de placeholder */}
+      <PlantCardSkeleton />
+      <PlantCardSkeleton />
+      <PlantCardSkeleton />
+      <PlantCardSkeleton />
+      <PlantCardSkeleton />
+    </div>
+  );
+}

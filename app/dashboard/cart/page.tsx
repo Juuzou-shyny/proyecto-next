@@ -5,7 +5,7 @@ import { AddPlant } from '@/app/ui/cart/buttons'; // Botón para agregar plantas
 import { lusitana } from '@/app/ui/fonts';
 import { Suspense } from 'react';
 import { PlantsTableSkeleton } from '@/app/ui/skeletons'; // Skeleton específico para plantas
-import { fetchPlantsPages } from '@/app/lib/data'; // Cambia esto a tu función para obtener páginas de plantas
+import { fetchPlantsPages, fetchPlants } from '@/app/lib/data'; // Cambia esto a tu función para obtener páginas de plantas y plantas
 import PlantsTable from '@/app/ui/cart/table';
 
 export default async function Page(props: {
@@ -18,6 +18,7 @@ export default async function Page(props: {
     const query = searchParams?.query || '';
     const currentPage = Number(searchParams?.page) || 1;
     const totalPages = await fetchPlantsPages(query); // Cambia para obtener el total de páginas de plantas
+    const plants = await fetchPlants(query, currentPage); // Obtén las plantas para la página actual
 
     return (
       <div className="w-full">
