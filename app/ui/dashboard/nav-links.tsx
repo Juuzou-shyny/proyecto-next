@@ -13,11 +13,16 @@ import { usePathname } from 'next/navigation';
 const links = [
   { name: 'Home', href: '/dashboard', icon: HomeIcon },
   {
-    name: 'Invoices',
+    name: 'Productos',
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
   },
-  { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Plantas', href: '/dashboard/customers', icon: UserGroupIcon },
+  {
+    name: 'Sustratos',
+    href: '/dashboard/invoices',
+    icon: DocumentDuplicateIcon,
+  }
 ];
 
 export default function NavLinks() {

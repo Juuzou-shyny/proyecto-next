@@ -83,7 +83,6 @@ export async function fetchCardData() {
   }
 }
 
-const ITEMS_PER_PAGE = 6;
 export async function fetchFilteredInvoices(
   query: string,
   currentPage: number,
@@ -213,5 +212,37 @@ export async function fetchFilteredCustomers(query: string) {
   } catch (err) {
     console.error('Database Error:', err);
     throw new Error('Failed to fetch customer table.');
+  }
+}
+
+
+const ITEMS_PER_PAGE = 6;
+
+export async function fetchFilteredProducts(query: string, currentPage: number) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const products = await sql`
+      SELECT
+        id,
+        nombre,
+        descripcion,
+        precio,
+        stock,
+        imagen_url
+      FROM productos
+      WHERE
+        nombre ILIKE ${`%${query}%`} OR
+        descripcion ILIKE ${`%${query}%`} OR
+        precio::text ILIKE ${`%${query}%`} OR
+        stock::text ILIKE ${`%${query}%`}
+      ORDER BY nombre ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return products.rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch products.');
   }
 }

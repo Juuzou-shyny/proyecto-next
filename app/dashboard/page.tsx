@@ -23,7 +23,7 @@ export default async function Page() {
        <div className="p-6">
       {/* Título del Dashboard */}
       <h1 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
-        Bienvenido a tu espacio de plantas
+        Bienvenido a SELVA
       </h1>
 
       {/* Tarjetas del Cliente */}
@@ -32,7 +32,7 @@ export default async function Page() {
       </div>
       {/* Exposición de Plantas */}
       <div className="mt-6 rounded-xl bg-gray-50 p-4 shadow">
-        <h2 className="text-lg font-bold mb-4">Esta es nuestra exposición de plantas</h2>
+        <h2 className={`${lusitana.className} text-lg font-bold mb-4`}>Nuestra exposición de plantas</h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-2">
     {/* Imagen 1 */}
     <div className="flex justify-center">

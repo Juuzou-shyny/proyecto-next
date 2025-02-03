@@ -76,8 +76,8 @@ function PaginationNumber({
     {
       'rounded-l-md': position === 'first' || position === 'single',
       'rounded-r-md': position === 'last' || position === 'single',
-      'z-10 bg-blue-600 border-blue-600 text-white': isActive,
-      'hover:bg-gray-100': !isActive && position !== 'middle',
+      'z-10 bg-lime-700 lime-pink-300 text-white': isActive,
+      'hover:bg-pink-400': !isActive && position !== 'middle',
       'text-gray-300': position === 'middle',
     },
   );

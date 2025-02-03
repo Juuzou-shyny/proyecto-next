@@ -131,3 +131,21 @@ export async function authenticate(
     throw error;
   }
 }
+
+export async function addToCart(productId: string) {
+  try {
+    const res = await fetch(`/api/cart`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ productId }),
+    });
+
+    if (!res.ok) {
+      throw new Error('Error al agregar al carrito');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
