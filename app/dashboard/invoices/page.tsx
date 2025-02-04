@@ -2,6 +2,7 @@ import { Suspense } from 'react';
 import ProductsTable from '@/app/ui/invoices/table'; // Asegúrate de importar el componente correctamente
 import { ToolsSkeleton } from '@/app/ui/skeletons'; // Importa el skeleton para mostrar mientras carga
 import { fetchFilteredProducts } from '@/app/lib/data'; // Asegúrate de tener esta función
+import Search from '@/app/ui/search'; // Importa el buscador desde la ubicación correcta
 
 export default async function Page({
   searchParams,
@@ -14,17 +15,14 @@ export default async function Page({
   // Fetch productos desde la API o base de datos
   const products = await fetchFilteredProducts(query, currentPage);
 
+
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Productos</h1>
-      </div>
+      </div>     
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
-        <input
-          type="text"
-          placeholder="Buscar productos..."
-          className="p-2 border rounded"
-        />
+        <Search placeholder="Buscar productos..." />
       </div>
       {/* Suspense para el fallback mientras los datos cargan */}
       <Suspense fallback={<ToolsSkeleton products={[]} />}>

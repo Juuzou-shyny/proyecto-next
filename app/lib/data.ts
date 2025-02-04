@@ -246,3 +246,21 @@ export async function fetchFilteredProducts(query: string, currentPage: number) 
     throw new Error('Failed to fetch products.');
   }
 }
+
+
+export async function fetchFeaturedPlants() {
+  try {
+    const data = await sql`
+      SELECT id, nombre, imagen_url, precio
+      FROM productos
+      WHERE categoria_id = 4 -- Asegúrate de que la categoría es correcta
+      LIMIT 4
+    `;
+
+    console.log('Datos obtenidos:', data.rows); // Depuración
+    return data.rows;
+  } catch (error) {
+    console.error('Error al obtener las plantas destacadas:', error);
+    throw new Error('No se pudieron obtener las plantas destacadas.');
+  }
+}

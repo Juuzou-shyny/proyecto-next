@@ -1,22 +1,15 @@
-import ClientCardWrapper from '@/app/ui/dashboard/client-cards'; // Importamos el nuevo componente
+import ClientCardWrapper from '@/app/ui/dashboard/client-cards';
 import RevenueChart from '@/app/ui/dashboard/revenue-chart';
 import LatestInvoices from '@/app/ui/dashboard/latest-invoices';
 import { lusitana } from '@/app/ui/fonts';
-import { 
-  LatestInvoicesSkeleton, 
-  RevenueChartSkeleton,
-} from '@/app/ui/skeletons';
+import { LatestInvoicesSkeleton, RevenueChartSkeleton } from '@/app/ui/skeletons';
 import Image from 'next/image';
-import { Suspense } from 'react';
+import { fetchFeaturedPlants } from '@/app/lib/data';
 
+// Fetch de las plantas destacadas desde la base de datos
+const featuredPlants = await fetchFeaturedPlants();
 export default async function Page() {
-  // Datos simulados para las plantas destacadas
-  const featuredPlants = [
-    { id: 1, name: 'Cactus', image_url: '/images/cactus.jpg', price: 5 },
-    { id: 2, name: 'Rosa', image_url: '/images/rosa.jpg', price: 10 },
-    { id: 3, name: 'Orquídea', image_url: '/images/orquidea.jpg', price: 15 },
-    { id: 4, name: 'Helecho', image_url: '/images/helecho.jpg', price: 7 },
-  ];
+  const featuredPlants = await fetchFeaturedPlants();
 
   return (
     <main className="bg-lime-700 rounded-lg min-h-screen p-6">
@@ -56,12 +49,8 @@ export default async function Page() {
     </div>
   </div>
       </div>
-
-
-      {/* Plantas Destacadas en formato Grid */}
-
-      <div className="mt-6 grid grid-cols-1 gap-6 md:grid-cols-4 lg:grid-cols-8"></div>
-        <div className="rounded-xl bg-gray-50 p-4 shadow md:col-span-4">
+  {/* Plantas Destacadas en formato Grid */}
+  <div className="mt-6 rounded-xl bg-gray-50 p-4 shadow md:col-span-4">
           <h2 className="text-lg font-bold mb-4">Plantas Destacadas</h2>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
             {featuredPlants.map((plant) => (
@@ -69,21 +58,29 @@ export default async function Page() {
                 key={plant.id}
                 className="flex flex-col items-center rounded-lg bg-white p-4 shadow"
               >
-                <div
-                  className="h-32 w-32 rounded-lg bg-gray-200"
-                  style={{
-                    backgroundImage: `url(${plant.image_url})`,
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                  }}
-                ></div>
-                <div className="mt-4 text-lg font-semibold">{plant.name}</div>
-                <div className="mt-2 text-gray-600">${plant.price}</div>
+                {/* Imagen de la Planta */}
+                <Image
+                  src={plant.imagen_url || '/default-image.png'}
+                  alt={plant.nombre || 'Planta'}
+                  className="rounded-lg"
+                  width={128}
+                  height={128}
+                />
+                {/* Nombre */}
+                <div className="mt-4 text-lg font-semibold">
+                  {plant.nombre || 'Nombre no disponible'}
+                </div>
+                {/* Precio */}
+                <div className="mt-2 text-gray-600">
+                  ${parseFloat(plant.precio).toFixed(2)}
+                </div>
               </div>
             ))}
           </div>
         </div>
-        </div>
+      </div>
     </main>
   );
 }
+
+
