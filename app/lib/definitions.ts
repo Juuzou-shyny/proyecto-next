@@ -7,6 +7,7 @@ export type User = {
   name: string;
   email: string;
   password: string;
+  role: string; // Añadido campo role
 };
 
 export type Customer = {
@@ -85,4 +86,22 @@ export type InvoiceForm = {
   customer_id: string;
   amount: number;
   status: 'pending' | 'paid';
+};
+
+
+export type Producto = {
+  id: number;
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  stock: number;
+  imagen_url: string;
+  categoria_id: number;
+  created_at?: string;
+  updated_at?: string;
+};
+
+export type Categoria = {
+  id: number;
+  nombre: string;
 };

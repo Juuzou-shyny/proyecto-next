@@ -149,3 +149,36 @@ export async function addToCart(productId: string) {
     console.error(error);
   }
 }
+
+
+
+export async function updateProduct(product: any) {
+  try {
+    console.log('Datos recibidos para actualizar:', product); // Depuración
+    await sql`
+      UPDATE productos
+      SET nombre = ${product.nombre},
+          descripcion = ${product.descripcion},
+          precio = ${product.precio},
+          stock = ${product.stock},
+          categoria_id = ${product.categoria_id}
+      WHERE id = ${product.id}
+    `;
+    console.log('Producto actualizado correctamente'); // Depuración
+  } catch (error) {
+    console.error('Database Error:', error); // Depuración
+    throw new Error('Failed to update product.');
+  }
+}
+
+
+export async function fetchCategories() {
+  try {
+    const { rows } = await sql`SELECT * FROM categorias`;
+    return rows;
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to fetch categories.');
+  }
+}
+

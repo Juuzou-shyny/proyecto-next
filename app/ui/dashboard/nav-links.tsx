@@ -22,6 +22,11 @@ const links = [
     name: 'Sustratos',
     href: '/dashboard/invoices',
     icon: DocumentDuplicateIcon,
+  },
+  {
+    name: 'Admin',
+    href: '/dashboard/admin',
+    icon: DocumentDuplicateIcon,
   }
 ];
 

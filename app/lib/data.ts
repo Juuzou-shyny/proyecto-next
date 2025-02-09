@@ -218,29 +218,21 @@ export async function fetchFilteredCustomers(query: string) {
 
 const ITEMS_PER_PAGE = 6;
 
-export async function fetchFilteredProducts(query: string, currentPage: number) {
-  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+export async function fetchFilteredProducts(query: string, page: number) {
+  const ITEMS_PER_PAGE = 10;
+  const offset = (page - 1) * ITEMS_PER_PAGE;
 
   try {
-    const products = await sql`
-      SELECT
-        id,
-        nombre,
-        descripcion,
-        precio,
-        stock,
-        imagen_url
-      FROM productos
-      WHERE
-        nombre ILIKE ${`%${query}%`} OR
-        descripcion ILIKE ${`%${query}%`} OR
-        precio::text ILIKE ${`%${query}%`} OR
-        stock::text ILIKE ${`%${query}%`}
-      ORDER BY nombre ASC
+    const { rows } = await sql`
+      SELECT p.*, c.nombre AS categoria
+      FROM productos p
+      LEFT JOIN categorias c ON p.categoria_id = c.id
+      WHERE p.nombre ILIKE ${`%${query}%`}
+      ORDER BY p.nombre
       LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
     `;
-
-    return products.rows;
+    console.log('Productos obtenidos:', rows); // Depuración
+    return rows;
   } catch (error) {
     console.error('Database Error:', error);
     throw new Error('Failed to fetch products.');
@@ -264,3 +256,43 @@ export async function fetchFeaturedPlants() {
     throw new Error('No se pudieron obtener las plantas destacadas.');
   }
 }
+
+
+export async function fetchCategories() {
+  try {
+    const categories = await sql`
+      SELECT id, nombre 
+      FROM categorias
+      ORDER BY nombre ASC
+    `;
+    console.log('Categorías obtenidas:', categories.rows); // Depuración
+    return categories.rows;
+  } catch (error) {
+    console.error('Error al obtener las categorías:', error);
+    throw new Error('No se pudieron obtener las categorías.');
+  }
+}
+
+// app/lib/data.ts
+export async function createProduct(productData: {
+  nombre: string;
+  descripcion: string;
+  precio: number;
+  stock: number;
+  categoria_id: number;
+  imagen_url: string;
+}) {
+  try {
+    const imageUrl = productData.imagen_url || null; // Maneja valores nulos para imagen_url
+    const { rows } = await sql`
+       INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, imagen_url)
+      VALUES (${productData.nombre}, ${productData.descripcion}, ${productData.precio}, ${productData.stock}, ${productData.categoria_id}, ${imageUrl})
+      RETURNING *;
+    `;
+    return rows[0];
+  } catch (error) {
+    console.error('Database Error:', error);
+    throw new Error('Failed to create product.');
+  }
+}
+

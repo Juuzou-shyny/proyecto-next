@@ -379,3 +379,4 @@ export function ToolsSkeleton({ products }: { products: any[] }) {
     </div>
   );
 }
+

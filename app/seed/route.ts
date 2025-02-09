@@ -1,7 +1,9 @@
 import bcrypt from 'bcrypt';
-import { db, VercelPoolClient } from '@vercel/postgres';
+import { db, sql, VercelPoolClient } from '@vercel/postgres';
 import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 import 'dotenv/config';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { NextResponse } from 'next/server';
 
 async function getClient() {
   return await db.connect();
@@ -101,6 +103,8 @@ export async function GET() {
     await seedCustomers(client);
     await seedInvoices(client);
     await seedRevenue(client);
+    await seedCategories(client); // Nueva función
+    await seedProducts(client); // Nueva función
     await client.sql`COMMIT`;
 
     return new Response(JSON.stringify({ message: 'Database seeded successfully' }), {
@@ -116,3 +120,116 @@ export async function GET() {
     client.release();
   }
 }
+
+async function seedCategories(client: VercelPoolClient) {
+  await client.sql`
+    CREATE TABLE IF NOT EXISTS categorias (
+      id SERIAL PRIMARY KEY,
+      nombre VARCHAR(255) NOT NULL
+    );
+  `;
+
+  // Datos de ejemplo para categorías
+  const categories = [
+    { id: 1, nombre: 'Plantas de Interior' },
+    { id: 2, nombre: 'Plantas de Exterior' },
+    { id: 3, nombre: 'Suculentas' },
+    { id: 4, nombre: 'Plantas Medicinales' },
+  ];
+
+  await Promise.all(
+    categories.map(async (category) => {
+      await client.sql`
+        INSERT INTO categorias (id, nombre)
+        VALUES (${category.id}, ${category.nombre})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+    })
+  );
+}
+
+
+async function seedProducts(client: VercelPoolClient) {
+  await client.sql`
+    CREATE TABLE IF NOT EXISTS productos (
+      id SERIAL PRIMARY KEY,
+      nombre VARCHAR(100) NOT NULL,
+      descripcion TEXT,
+      precio NUMERIC(10, 2) NOT NULL DEFAULT 0.00,
+      stock INT NOT NULL DEFAULT 0,
+      imagen_url VARCHAR(255),
+      categoria_id INT NOT NULL REFERENCES categorias(id) ON DELETE CASCADE,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+
+  // Datos de ejemplo para productos
+  const products = [
+    {
+      id: 1,
+      nombre: 'Planta de Interior 1',
+      descripcion: 'Una hermosa planta de interior.',
+      precio: 19.99,
+      stock: 10,
+      imagen_url: 'https://example.com/planta1.jpg',
+      categoria_id: 1,
+    },
+    {
+      id: 2,
+      nombre: 'Planta de Exterior 1',
+      descripcion: 'Una planta resistente para exteriores.',
+      precio: 29.99,
+      stock: 5,
+      imagen_url: 'https://example.com/planta2.jpg',
+      categoria_id: 2,
+    },
+  ];
+
+  await Promise.all(
+    products.map(async (product) => {
+      await client.sql`
+        INSERT INTO productos (id, nombre, descripcion, precio, stock, imagen_url, categoria_id)
+        VALUES (${product.id}, ${product.nombre}, ${product.descripcion}, ${product.precio}, ${product.stock}, ${product.imagen_url}, ${product.categoria_id})
+        ON CONFLICT (id) DO NOTHING;
+      `;
+    })
+  );
+}
+
+// import { createProduct } from '@/app/lib/data';
+export async function PUT(req: Request, { params }: { params: { id: string } }) {
+  try {
+    const body = await req.json();
+    const { nombre, descripcion, precio, stock, categoria_id, imagen_url } = body;
+
+    if (!nombre || !precio || !stock || !categoria_id) {
+      return new Response(JSON.stringify({ error: 'Faltan campos requeridos' }), { status: 400 });
+    }
+
+    await sql`
+      UPDATE productos
+      SET 
+        nombre = ${nombre},
+        descripcion = ${descripcion || null},
+        precio = ${precio},
+        stock = ${stock},
+        categoria_id = ${categoria_id},
+        imagen_url = ${imagen_url || null},
+        updated_at = NOW()
+      WHERE id = ${params.id}
+    `;
+
+    return new Response(
+      JSON.stringify({ success: true, message: 'Producto actualizado con éxito' }),
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Error al actualizar producto' }), { status: 500 });
+  }
+}
+
+import { createProduct } from "@/app/lib/data";
+
+
