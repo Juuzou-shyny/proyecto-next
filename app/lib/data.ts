@@ -245,7 +245,7 @@ export async function fetchFeaturedPlants() {
     const data = await sql`
       SELECT id, nombre, imagen_url, precio
       FROM productos
-      WHERE categoria_id = 4 -- Asegúrate de que la categoría es correcta
+       WHERE categoria_id IN (1, 2) -- Asegúrate de que la categoría es correcta
       LIMIT 4
     `;
 
@@ -286,7 +286,7 @@ export async function createProduct(productData: {
     const imageUrl = productData.imagen_url || null; // Maneja valores nulos para imagen_url
     const { rows } = await sql`
        INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, imagen_url)
-      VALUES (${productData.nombre}, ${productData.descripcion}, ${productData.precio}, ${productData.stock}, ${productData.categoria_id}, ${imageUrl})
+      VALUES (${productData.nombre}, ${productData.descripcion}, ${productData.precio}, ${productData.stock}, ${productData.categoria_id})
       RETURNING *;
     `;
     return rows[0];
@@ -295,4 +295,3 @@ export async function createProduct(productData: {
     throw new Error('Failed to create product.');
   }
 }
-

@@ -4,7 +4,7 @@ import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 import 'dotenv/config';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
-
+import path from "path";
 async function getClient() {
   return await db.connect();
 }
@@ -231,5 +231,41 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 import { createProduct } from "@/app/lib/data";
+import { writeFile } from 'fs/promises';
 
 
+
+export async function POST(request: Request) {
+  try {
+    const formData = await request.formData();
+    const nombre = formData.get("nombre") as string | null;
+    const descripcion = formData.get("descripcion") as string | null;
+    const precio = Number(formData.get("precio"));
+    const stock = Number(formData.get("stock"));
+    const categoria_id = Number(formData.get("categoria_id"));
+    const imagen = formData.get("imagen") as File | null;
+
+    let imageUrl = "";
+    if (imagen) {
+      const bytes = await imagen.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      const filePath = path.join(process.cwd(), "public/uploads", imagen.name);
+      await writeFile(filePath, buffer);
+      imageUrl = `/uploads/${imagen.name}`;
+    }
+
+    const newProduct = await createProduct({
+      nombre: nombre ?? "",
+      descripcion: descripcion ?? "",
+      precio,
+      stock,
+      categoria_id,
+      imagen_url: imageUrl,
+    });
+
+    return NextResponse.json(newProduct, { status: 201 });
+  } catch (error: any) {
+    console.error("Error al crear el producto:", error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
+  }
+}

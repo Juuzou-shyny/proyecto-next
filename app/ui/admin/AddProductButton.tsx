@@ -20,18 +20,17 @@ export default function AddProductButton({ categories }: AddProductButtonProps) 
     setModalOpen(false); // Cierra el modal
   };
 
-  const handleCreateProduct = async (newProduct: any) => {
+  const handleCreateProduct = async (formData: any) => {
     try {
-      const response = await fetch("/app/api/products/route", { // Asegúrate de que la URL sea correcta
+      const response = await fetch("seed/products", { 
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newProduct),
+        body: formData, // Cambiado a FormData
       });
-
+  
       if (!response.ok) {
         throw new Error("Failed to create product.");
       }
-
+  
       const createdProduct = await response.json();
       console.log("Producto creado:", createdProduct);
     } catch (error) {
@@ -39,6 +38,7 @@ export default function AddProductButton({ categories }: AddProductButtonProps) 
       alert("No se pudo crear el producto. Por favor, inténtalo de nuevo.");
     }
   };
+  
 
   return (
     <>
