@@ -20,7 +20,7 @@ const links = [
   { name: 'Plantas', href: '/dashboard/customers', icon: UserGroupIcon },
   {
     name: 'Sustratos',
-    href: '/dashboard/invoices',
+    href: '/dashboard/noexisteaun',
     icon: DocumentDuplicateIcon,
   },
   {
@@ -40,7 +40,8 @@ export default function NavLinks() {
           <Link
             key={link.name}
             href={link.href}
-            className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-lime-800 p-3 text-sm font-medium text-gray-50 hover:bg-lime-950 hover:text-lime-50 md:flex-none md:justify-start md:p-2 md:px-3
+            className={`flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-lime-800 p-3 text-sm font-medium text-gray-50
+               hover:bg-lime-950 hover:text-lime-50 md:flex-none md:justify-start md:p-2 md:px-3 dark:bg-gray-900  p-4 shadow 
               
               
               ${pathname === link.href ? 'bg-lime-950 text-lime-200' : ''}

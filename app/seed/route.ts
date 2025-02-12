@@ -4,7 +4,7 @@ import { invoices, customers, revenue, users } from '../lib/placeholder-data';
 import 'dotenv/config';
 import { NextApiRequest, NextApiResponse } from 'next';
 import { NextResponse } from 'next/server';
-import path from "path";
+
 async function getClient() {
   return await db.connect();
 }
@@ -197,6 +197,8 @@ async function seedProducts(client: VercelPoolClient) {
   );
 }
 
+
+
 // import { createProduct } from '@/app/lib/data';
 export async function PUT(req: Request, { params }: { params: { id: string } }) {
   try {
@@ -231,13 +233,15 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
 }
 
 import { createProduct } from "@/app/lib/data";
-import { writeFile } from 'fs/promises';
-
+import { writeFile } from 'fs';
+import path from 'path';
 
 
 export async function POST(request: Request) {
   try {
     const formData = await request.formData();
+    console.log("📩 Datos recibidos:", formData);
+
     const nombre = formData.get("nombre") as string | null;
     const descripcion = formData.get("descripcion") as string | null;
     const precio = Number(formData.get("precio"));
@@ -245,17 +249,25 @@ export async function POST(request: Request) {
     const categoria_id = Number(formData.get("categoria_id"));
     const imagen = formData.get("imagen") as File | null;
 
+    if (!nombre || !precio || !stock || !categoria_id) {
+      console.error("❌ Error: Faltan datos obligatorios", { nombre, precio, stock, categoria_id });
+      return new Response(JSON.stringify({ error: "Faltan datos obligatorios" }), { status: 400 });
+    }
+
     let imageUrl = "";
     if (imagen) {
       const bytes = await imagen.arrayBuffer();
       const buffer = Buffer.from(bytes);
       const filePath = path.join(process.cwd(), "public/uploads", imagen.name);
-      await writeFile(filePath, buffer);
+
+      await writeFile(filePath, buffer, (err) => {
+        if (err) throw err;
+      });
       imageUrl = `/uploads/${imagen.name}`;
     }
 
     const newProduct = await createProduct({
-      nombre: nombre ?? "",
+      nombre,
       descripcion: descripcion ?? "",
       precio,
       stock,
@@ -263,9 +275,11 @@ export async function POST(request: Request) {
       imagen_url: imageUrl,
     });
 
+    console.log("✅ Producto creado correctamente:", newProduct);
+
     return NextResponse.json(newProduct, { status: 201 });
   } catch (error: any) {
-    console.error("Error al crear el producto:", error);
+    console.error("🚨 Error en el servidor:", error);
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

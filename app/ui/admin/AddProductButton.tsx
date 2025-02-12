@@ -19,23 +19,26 @@ export default function AddProductButton({ categories }: AddProductButtonProps) 
   const handleCloseModal = () => {
     setModalOpen(false); // Cierra el modal
   };
-
-  const handleCreateProduct = async (formData: any) => {
+  const handleCreateProduct = async (formData: FormData) => {
     try {
-      const response = await fetch("seed/products", { 
+      const response = await fetch("@/api/seed", {   
+        // 👈 Asegúrate de que esta URL es correcta
         method: "POST",
-        body: formData, // Cambiado a FormData
+        body: formData, // `formData` ya maneja `Content-Type: multipart/form-data`
       });
   
       if (!response.ok) {
-        throw new Error("Failed to create product.");
+        throw new Error(`Error HTTP: ${response.status}`);
       }
   
       const createdProduct = await response.json();
       console.log("Producto creado:", createdProduct);
+  
+      // Recargar la página o actualizar la lista de productos sin recargar
+      window.location.reload(); // 👈 Alternativamente, usa un estado para actualizar la UI
     } catch (error) {
       console.error("Error al crear el producto:", error);
-      alert("No se pudo crear el producto. Por favor, inténtalo de nuevo.");
+      alert("No se pudo crear el producto. Verifica los datos e intenta de nuevo.");
     }
   };
   

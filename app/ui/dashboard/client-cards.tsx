@@ -94,20 +94,20 @@ function ClientCardDropdown({
   const Icon = iconMap[type] as React.ComponentType<{ className: string }>;
 
   return (
-    <div className="relative group rounded-xl bg-gray-50 p-2 shadow-sm">
+    <div className="relative group rounded-xl bg-gray-50 p-2 shadow-sm dark:bg-gray-800  ">
       <div className="flex p-4">
         {Icon ? <Icon className="h-5 w-5 text-green-500" /> : null}
-        <h3 className="ml-2 text-sm font-medium text-gray-700">{title}</h3>
+        <h3 className="ml-2 text-sm font-medium text-gray-700 dark:bg-gray-800 dark:text-white " >{title}</h3>
       </div>
       <p
-        className={`${lusitana.className} truncate rounded-xl bg-white px-4 py-8 text-center text-lg text-gray-600`}
+        className={`${lusitana.className} truncate rounded-xl bg-white px-4 py-8 text-center text-lg text-gray-600 dark:bg-gray-800 dark:text-white `}
       >
         {value}
       </p>
 
       {/* Menú desplegable */}
-      <div className="absolute left-0 hidden w-full rounded-lg bg-white shadow-lg group-hover:block">
-        <ul className="py-2 text-gray-700">
+      <div className="absolute left-0 hidden w-full rounded-lg bg-white shadow-lg group-hover:block dark:bg-gray-800  p-4 shadow">
+        <ul className="py-2 text-gray-700 dark:text-white">
           {menuItems.map((item) => (
             <li key={item.name}>
               <span className="block px-4 py-2 cursor-pointer hover:bg-green-100">
@@ -133,13 +133,13 @@ export function ClientCard({
   const Icon = iconMap[type];
 
   return (
-    <div className="rounded-xl bg-gray-50 p-2 shadow-sm">
+    <div className="rounded-xl bg-gray-50 p-2 shadow-sm  dark:bg-gray-800 dark:text-white ">
       <div className="flex p-4">
-        {Icon ? <Icon className="h-5 w-5 text-green-500" /> : null}
-        <h3 className="ml-2 text-sm font-medium text-gray-700">{title}</h3>
+        {Icon ? <Icon className="h-5 w-5 text-green-500 " /> : null}
+        <h3 className="ml-2 text-sm font-medium text-gray-700  dark:bg-gray-800 dark:text-white ">{title}</h3>
       </div>
       <p
-        className={`${lusitana.className} truncate rounded-xl bg-white px-4 py-8 text-center text-lg text-gray-600`}
+        className={`${lusitana.className} truncate rounded-xl bg-white px-4 py-8 text-center text-lg text-gray-600  dark:bg-gray-800 dark:text-white p-4 shadow`}
       >
         {value}
       </p>

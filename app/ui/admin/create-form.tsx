@@ -57,7 +57,7 @@ export default function CreateProductModal({
       data.append("imagen", imagen);
     }
 
-    await onCreate(data); // Llama a la función onCreate pasada como prop
+    onCreate(data); // Llama a la función onCreate pasada como prop
     onClose(); // Cierra el modal después de crear el producto
   };
 

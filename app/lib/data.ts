@@ -272,26 +272,23 @@ export async function fetchCategories() {
     throw new Error('No se pudieron obtener las categorías.');
   }
 }
-
-// app/lib/data.ts
 export async function createProduct(productData: {
   nombre: string;
   descripcion: string;
   precio: number;
   stock: number;
   categoria_id: number;
-  imagen_url: string;
+  imagen_url: string | null; // Aceptar `null`
 }) {
   try {
-    const imageUrl = productData.imagen_url || null; // Maneja valores nulos para imagen_url
     const { rows } = await sql`
-       INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, imagen_url)
-      VALUES (${productData.nombre}, ${productData.descripcion}, ${productData.precio}, ${productData.stock}, ${productData.categoria_id})
+      INSERT INTO productos (nombre, descripcion, precio, stock, categoria_id, imagen_url)
+      VALUES (${productData.nombre}, ${productData.descripcion}, ${productData.precio}, ${productData.stock}, ${productData.categoria_id}, ${productData.imagen_url || null})
       RETURNING *;
     `;
     return rows[0];
   } catch (error) {
-    console.error('Database Error:', error);
-    throw new Error('Failed to create product.');
+    console.error("Database Error:", error);
+    throw new Error("Failed to create product.");
   }
 }
