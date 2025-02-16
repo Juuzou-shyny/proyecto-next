@@ -9,12 +9,9 @@ export default async function AdminPage({
 }: {
   searchParams?: { query?: string; page?: string };
 }) {
-  // Espera la resolución de searchParams
-  const params = await searchParams;
-
-  // Extraer los valores de searchParams de manera segura
-  const query = params?.query || "";
-  const currentPage = Number(params?.page) || 1;
+  // No necesitas hacer await en searchParams, ya es un objeto
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
 
   // Fetch productos y categorías desde la API o base de datos
   const products = await fetchFilteredProducts(query, currentPage);
