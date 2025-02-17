@@ -200,15 +200,26 @@ async function seedProducts(client: VercelPoolClient) {
 
 
 // import { createProduct } from '@/app/lib/data';
-export async function PUT(req: Request, { params }: { params: { id: string } }) {
+
+export async function PUT(req: Request, context: any) {
   try {
+    // Desestructuramos `params` como una promesa
+    const { id } = await context.params;
+
+    if (!id) {
+      return NextResponse.json({ error: 'ID de producto no proporcionado' }, { status: 400 });
+    }
+
+    // Parseamos el cuerpo de la solicitud
     const body = await req.json();
     const { nombre, descripcion, precio, stock, categoria_id, imagen_url } = body;
 
+    // Validamos los campos requeridos
     if (!nombre || !precio || !stock || !categoria_id) {
-      return new Response(JSON.stringify({ error: 'Faltan campos requeridos' }), { status: 400 });
+      return NextResponse.json({ error: 'Faltan campos requeridos' }, { status: 400 });
     }
 
+    // Actualizamos el producto en la base de datos
     await sql`
       UPDATE productos
       SET 
@@ -219,16 +230,16 @@ export async function PUT(req: Request, { params }: { params: { id: string } }) 
         categoria_id = ${categoria_id},
         imagen_url = ${imagen_url || null},
         updated_at = NOW()
-      WHERE id = ${params.id}
+      WHERE id = ${id}
     `;
 
-    return new Response(
-      JSON.stringify({ success: true, message: 'Producto actualizado con éxito' }),
+    return NextResponse.json(
+      { success: true, message: 'Producto actualizado con éxito' },
       { status: 200 }
     );
   } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: 'Error al actualizar producto' }), { status: 500 });
+    console.error('Error al actualizar producto:', error);
+    return NextResponse.json({ error: 'Error al actualizar producto' }, { status: 500 });
   }
 }
 

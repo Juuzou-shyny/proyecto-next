@@ -1,35 +1,50 @@
-import { Suspense } from 'react';
-import ProductsTable from '@/app/ui/invoices/table'; // Asegúrate de importar el componente correctamente
-import { ToolsSkeleton } from '@/app/ui/skeletons'; // Importa el skeleton para mostrar mientras carga
-import { fetchFilteredProducts } from '@/app/lib/data'; // Asegúrate de tener esta función
-import Search from '@/app/ui/search'; // Importa el buscador desde la ubicación correcta
+// app/dashboard/invoices/page.tsx
+import { Suspense } from "react";
+import ProductsTable from "@/app/ui/invoices/table";
+import { ToolsSkeleton } from "@/app/ui/skeletons";
+import { fetchFilteredProducts } from "@/app/lib/data";
+import Search from "@/app/ui/search";
 
-export default async function Page({
-  searchParams,
-}: {
-  searchParams?: { query?: string; page?: string };
-}) {
-  const query = searchParams?.query || ''; // Obtén la consulta de búsqueda
-  const currentPage = Number(searchParams?.page) || 1; // Obtén la página actual
+interface PageProps {
+  params?: Promise<Record<string, string>> | undefined;
+  searchParams?: Promise<Record<string, string | string[] | undefined>> | undefined;
+}
 
-  // Fetch productos desde la API o base de datos
-  const products = await fetchFilteredProducts(query, currentPage);
-
+export default async function Page({ searchParams }: PageProps) {
+  const resolvedSearchParams = await searchParams;
+  const query =
+    typeof resolvedSearchParams?.query === "string"
+      ? resolvedSearchParams.query
+      : "";
+  const currentPage =
+    typeof resolvedSearchParams?.page === "string"
+      ? Number(resolvedSearchParams.page)
+      : 1;
 
   return (
     <div className="w-full">
       <div className="flex w-full items-center justify-between">
         <h1 className="text-2xl font-bold">Productos</h1>
-      </div>     
+      </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Buscar productos..." />
       </div>
       {/* Suspense para el fallback mientras los datos cargan */}
       <Suspense fallback={<ToolsSkeleton products={[]} />}>
-        <ProductsTable products={products} />
+        <ProductsContent query={query} currentPage={currentPage} />
       </Suspense>
     </div>
   );
 }
 
-
+// Componente separado para manejar async/await
+async function ProductsContent({
+  query,
+  currentPage,
+}: {
+  query: string;
+  currentPage: number;
+}) {
+  const products = await fetchFilteredProducts(query, currentPage);
+  return <ProductsTable products={products} />;
+}
